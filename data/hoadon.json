@@ -1,0 +1,62 @@
+[
+    {
+        "ma_hd": "HDA101202609",
+        "ma_phong": "A101",
+        "thang": "09/2026",
+        "so_dien_cu": 0,
+        "so_dien_moi": 120,
+        "so_nuoc_cu": 0,
+        "so_nuoc_moi": 16,
+        "phi_o": 1200000,
+        "da_thanh_toan": true,
+        "tong_tien": 1860000
+    },
+    {
+        "ma_hd": "HDA101202610",
+        "ma_phong": "A101",
+        "thang": "10/2026",
+        "so_dien_cu": 120,
+        "so_dien_moi": 260,
+        "so_nuoc_cu": 16,
+        "so_nuoc_moi": 34,
+        "phi_o": 1200000,
+        "da_thanh_toan": false,
+        "tong_tien": 1960000
+    },
+    {
+        "ma_hd": "HDA102202610",
+        "ma_phong": "A102",
+        "thang": "10/2026",
+        "so_dien_cu": 100,
+        "so_dien_moi": 350,
+        "so_nuoc_cu": 20,
+        "so_nuoc_moi": 35,
+        "phi_o": 1700000,
+        "da_thanh_toan": false,
+        "tong_tien": 2800000
+    },
+    {
+        "ma_hd": "HDB201202610",
+        "ma_phong": "B201",
+        "thang": "10/2026",
+        "so_dien_cu": 50,
+        "so_dien_moi": 110,
+        "so_nuoc_cu": 5,
+        "so_nuoc_moi": 13,
+        "phi_o": 800000,
+        "da_thanh_toan": true,
+        "tong_tien": 1130000
+    },
+    {
+        "ma_hd": "HDB202202610",
+        "ma_phong": "B202",
+        "thang": "10/2026",
+        "so_dien_cu": 20,
+        "so_dien_moi": 120,
+        "so_nuoc_cu": 2,
+        "so_nuoc_moi": 10,
+        "phi_o": 1300000,
+        "da_thanh_toan": false,
+        "tong_tien": 1770000
+    }
+]

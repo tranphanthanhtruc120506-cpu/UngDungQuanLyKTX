@@ -1,44 +1,62 @@
-"""managers/quan_ly_hop_dong.py - QuanLyHopDong (việc A8, phần 1)."""
-import datetime
-import re
-
+import json
+import os
 import config
-from exceptions import InvalidDataError
-from managers.co_so import QuanLyCoSo
+from exceptions import InvalidDataError, DuplicateIdError
 from models.hop_dong import HopDong
-from utils.validators import chuan_hoa_ma, doc_ngay
 
+class QuanLyHopDong:
+    def __init__(self):
+        self.file_path = config.FILE_HOP_DONG
+        self.danh_sach_hd = [] # Danh sách chứa các object HopDong
+        self.doc_file()
 
-class QuanLyHopDong(QuanLyCoSo):
-    LOP_DOI_TUONG = HopDong
-    TEN_DOI_TUONG = "hợp đồng"
-    TRUONG_MA = "ma_hd"
+    def doc_file(self):
+        if not os.path.exists(self.file_path):
+            return
+        try:
+            with open(self.file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for item in data:
+                    hd = HopDong(
+                        item['ma_hd'],
+                        item['ma_sv'],
+                        item['ma_phong'],
+                        item['ngay_bat_dau'],
+                        item['ngay_ket_thuc'],
+                        item.get('trang_thai', config.TT_HIEU_LUC)
+                    )
+                    self.danh_sach_hd.append(hd)
+        except Exception as e:
+            print(f"Lỗi đọc file hợp đồng: {e}")
 
-    def sinh_ma(self):
-        """Mã kế tiếp: HD0001, HD0002... (lớn nhất hiện có + 1, nên xóa giữa chừng không sinh trùng)."""
-        lon_nhat = 0
-        for ma in self._ds:
-            m = re.fullmatch(r"HD([0-9]+)", ma)
-            if m:
-                lon_nhat = max(lon_nhat, int(m.group(1)))
-        return f"HD{lon_nhat + 1:04d}"
+    def ghi_file(self):
+        try:
+            os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
+            with open(self.file_path, 'w', encoding='utf-8') as f:
+                # Chuyển từng object HopDong thành dict để lưu
+                data = [hd.to_dict() for hd in self.danh_sach_hd]
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"Lỗi ghi file hợp đồng: {e}")
 
-    def hop_dong_hieu_luc_cua_sv(self, ma_sv, ngay=None):
-        """Ngoại lệ có chủ đích: trả None nếu SV không có hợp đồng hiệu lực."""
-        ma_sv = chuan_hoa_ma(ma_sv, "ma_sv")
-        ngay = datetime.date.today() if ngay is None else doc_ngay(ngay, "ngay")
-        con_hieu_luc = [h for h in self._ds.values()
-                        if h.ma_sv == ma_sv and h.con_hieu_luc(ngay)]
-        if not con_hieu_luc:
-            return None
-        return max(con_hieu_luc, key=lambda h: h.ngay_bat_dau)
+    def them_hop_dong(self, hd):
+        # Kiểm tra trùng mã
+        for h in self.danh_sach_hd:
+            if h.ma_hd == hd.ma_hd:
+                raise DuplicateIdError("Mã hợp đồng đã tồn tại!")
+        self.danh_sach_hd.append(hd)
+        self.ghi_file()
 
-    def sap_het_han(self, ngay=None, so_ngay=None):
-        """Hợp đồng sắp hết hạn, sắp theo ngày kết thúc tăng dần."""
-        ngay = datetime.date.today() if ngay is None else doc_ngay(ngay, "ngay")
-        if so_ngay is None:
-            so_ngay = config.SO_NGAY_CANH_BAO_HET_HAN
-        elif not isinstance(so_ngay, int) or isinstance(so_ngay, bool) or so_ngay < 0:
-            raise InvalidDataError("so_ngay phải là số nguyên không âm", "so_ngay")
-        ket_qua = [h for h in self._ds.values() if h.sap_het_han(ngay, so_ngay)]
-        return sorted(ket_qua, key=lambda h: (h.ngay_ket_thuc, h.ma))
+    def xoa_hop_dong(self, ma_hd):
+        for hd in self.danh_sach_hd:
+            if hd.ma_hd == ma_hd:
+                self.danh_sach_hd.remove(hd)
+                self.ghi_file()
+                return True
+        raise InvalidDataError("Không tìm thấy hợp đồng để xóa!")
+
+    def tim_hop_dong(self, ma_hd):
+        for hd in self.danh_sach_hd:
+            if hd.ma_hd == ma_hd:
+                return hd
+        return None

@@ -1,0 +1,23 @@
+[
+    {
+        "ma_vp": "VP0001",
+        "ma_sv": "2044000003",
+        "noi_dung": "Về muộn sau 23h",
+        "ngay": "15/09/2026",
+        "muc_phat": 50000
+    },
+    {
+        "ma_vp": "VP0002",
+        "ma_sv": "2044000008",
+        "noi_dung": "Sử dụng ấm siêu tốc trong phòng",
+        "ngay": "05/10/2026",
+        "muc_phat": 100000
+    },
+    {
+        "ma_vp": "VP0003",
+        "ma_sv": "2044000005",
+        "noi_dung": "Gây ồn ào giờ giới nghiêm",
+        "ngay": "10/10/2026",
+        "muc_phat": 50000
+    }
+]

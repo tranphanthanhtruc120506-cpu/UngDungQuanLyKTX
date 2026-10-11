@@ -1,0 +1,82 @@
+[
+    {
+        "ma_hd": "HD0001",
+        "ma_sv": "2044000001",
+        "ma_phong": "A101",
+        "ngay_bat_dau": "01/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0002",
+        "ma_sv": "2044000002",
+        "ma_phong": "A102",
+        "ngay_bat_dau": "01/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0003",
+        "ma_sv": "2044000003",
+        "ma_phong": "A101",
+        "ngay_bat_dau": "01/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0004",
+        "ma_sv": "2044000004",
+        "ma_phong": "B201",
+        "ngay_bat_dau": "05/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0005",
+        "ma_sv": "2044000005",
+        "ma_phong": "B202",
+        "ngay_bat_dau": "05/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0006",
+        "ma_sv": "2044000006",
+        "ma_phong": "A102",
+        "ngay_bat_dau": "10/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0007",
+        "ma_sv": "2044000007",
+        "ma_phong": "A101",
+        "ngay_bat_dau": "15/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0008",
+        "ma_sv": "2044000008",
+        "ma_phong": "B201",
+        "ngay_bat_dau": "15/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0009",
+        "ma_sv": "2044000009",
+        "ma_phong": "A101",
+        "ngay_bat_dau": "20/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    },
+    {
+        "ma_hd": "HD0010",
+        "ma_sv": "2044000010",
+        "ma_phong": "A102",
+        "ngay_bat_dau": "25/09/2026",
+        "ngay_ket_thuc": "30/06/2027",
+        "trang_thai": "hieu_luc"
+    }
+]

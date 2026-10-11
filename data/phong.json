@@ -1,0 +1,51 @@
+[
+    {
+        "ma_phong": "A101",
+        "loai": "thuong",
+        "so_cho": 4,
+        "gia_co_ban": 400000,
+        "danh_sach_sv": [
+            "2044000001",
+            "2044000003",
+            "2044000007",
+            "2044000009"
+        ]
+    },
+    {
+        "ma_phong": "A102",
+        "loai": "maylanh",
+        "so_cho": 4,
+        "gia_co_ban": 400000,
+        "danh_sach_sv": [
+            "2044000002",
+            "2044000006",
+            "2044000010"
+        ]
+    },
+    {
+        "ma_phong": "B201",
+        "loai": "thuong",
+        "so_cho": 2,
+        "gia_co_ban": 300000,
+        "danh_sach_sv": [
+            "2044000004",
+            "2044000008"
+        ]
+    },
+    {
+        "ma_phong": "B202",
+        "loai": "maylanh",
+        "so_cho": 2,
+        "gia_co_ban": 300000,
+        "danh_sach_sv": [
+            "2044000005"
+        ]
+    },
+    {
+        "ma_phong": "C301",
+        "loai": "thuong",
+        "so_cho": 4,
+        "gia_co_ban": 400000,
+        "danh_sach_sv": []
+    }
+]

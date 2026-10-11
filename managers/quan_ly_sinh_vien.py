@@ -1,37 +1,68 @@
-"""Quản lý danh sách sinh viên (phần B3, mục 5.3 của Hợp đồng hàm và lỗi).
-
-Toàn bộ phần dùng chung (thêm, xóa, sửa, tìm theo mã, lọc theo tiêu chí,
-lưu file) đã có sẵn trong QuanLyCoSo. Lớp này chỉ khai báo "quản lý cái gì"
-và bổ sung hàm tim_theo_ten().
-"""
-from exceptions import InvalidDataError
-from managers.co_so import QuanLyCoSo
+import json
+import os
+import config
+from exceptions import InvalidDataError, DuplicateIdError
 from models.sinh_vien import SinhVien
 
+class QuanLySinhVien:
+    def __init__(self):
+        # Lấy đường dẫn file từ config
+        self.file_path = config.FILE_SINH_VIEN
+        # Dùng List cơ bản để chứa danh sách sinh viên
+        self.danh_sach_sv = [] 
+        self.doc_file()
 
-class QuanLySinhVien(QuanLyCoSo):
-    """Quản lý các đối tượng SinhVien, khóa chính là ma_sv."""
+    def doc_file(self):
+        if not os.path.exists(self.file_path):
+            return # Nếu file chưa tồn tại thì bỏ qua
+            
+        try:
+            with open(self.file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                # Đọc từng dòng json, tạo đối tượng SinhVien và đưa vào List
+                for item in data:
+                    sv = SinhVien(
+                        item['ma_sv'], 
+                        item['ho_ten'], 
+                        item['ngay_sinh'], 
+                        item['so_dien_thoai'], 
+                        item['lop']
+                    )
+                    self.danh_sach_sv.append(sv)
+        except Exception as e:
+            print(f"Lỗi đọc file sinh viên: {e}")
 
-    LOP_DOI_TUONG = SinhVien   # lớp nền dùng để tạo đối tượng khi đọc file
-    TEN_DOI_TUONG = "sinh viên"  # dùng trong thông báo lỗi
-    TRUONG_MA = "ma_sv"        # tên trường mã, dùng để chặn sửa mã
+    def ghi_file(self):
+        try:
+            # Tạo thư mục data nếu chưa có
+            os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
+            with open(self.file_path, 'w', encoding='utf-8') as f:
+                # Ép kiểu đối tượng về dạng dict để ghi json
+                data = [sv.to_dict() for sv in self.danh_sach_sv]
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"Lỗi ghi file sinh viên: {e}")
+
+    def them_sinh_vien(self, sv):
+        # Kiểm tra mã sinh viên đã tồn tại chưa bằng vòng lặp
+        for s in self.danh_sach_sv:
+            if s.ma_sv == sv.ma_sv:
+                raise DuplicateIdError("Mã sinh viên đã tồn tại!")
+        self.danh_sach_sv.append(sv)
+        self.ghi_file()
+
+    def xoa_sinh_vien(self, ma_sv):
+        for sv in self.danh_sach_sv:
+            if sv.ma_sv == ma_sv:
+                self.danh_sach_sv.remove(sv)
+                self.ghi_file()
+                return True
+        raise InvalidDataError("Không tìm thấy sinh viên để xóa!")
 
     def tim_theo_ten(self, tu_khoa):
-        """Tìm sinh viên có họ tên chứa từ khóa (tìm tương đối).
-
-        Không phân biệt hoa thường, tìm theo chuỗi con. Ví dụ "aN" tìm ra
-        "Nguyễn Văn An". Khoảng trắng thừa ở hai đầu từ khóa được bỏ qua.
-
-        Trả về:
-            list các SinhVien khớp (list rỗng nếu không có ai khớp).
-            Đây là list mới, sửa nó không ảnh hưởng dữ liệu bên trong.
-        Ném lỗi:
-            InvalidDataError: từ khóa không phải chuỗi hoặc rỗng.
-        """
-        if not isinstance(tu_khoa, str):
-            raise InvalidDataError("Từ khóa tìm kiếm phải là chuỗi", "tu_khoa")
-        tu_khoa = tu_khoa.strip()
-        if not tu_khoa:
-            raise InvalidDataError("Vui lòng nhập từ khóa tìm kiếm", "tu_khoa")
-        # Tái sử dụng bộ lọc của lớp nền (chuỗi: chứa chuỗi con, không phân biệt hoa thường)
-        return self.tim_theo_tieu_chi(ho_ten=tu_khoa)
+        ket_qua = []
+        for sv in self.danh_sach_sv:
+            # So sánh chuỗi không phân biệt hoa thường
+            if tu_khoa.lower() in sv.ho_ten.lower():
+                ket_qua.append(sv)
+        return ket_qua

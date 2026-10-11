@@ -1,0 +1,72 @@
+[
+    {
+        "ma_sv": "2044000001",
+        "ho_ten": "Nguyễn Văn An",
+        "ngay_sinh": "15/03/2005",
+        "so_dien_thoai": "0912345678",
+        "lop": "DH24CNTT"
+    },
+    {
+        "ma_sv": "2044000002",
+        "ho_ten": "Lý Mỹ Linh",
+        "ngay_sinh": "20/07/2005",
+        "so_dien_thoai": "0987654321",
+        "lop": "DH24KT"
+    },
+    {
+        "ma_sv": "2044000003",
+        "ho_ten": "Trần Quốc Bảo",
+        "ngay_sinh": "10/10/2004",
+        "so_dien_thoai": "0901112223",
+        "lop": "DH24TMDT"
+    },
+    {
+        "ma_sv": "2044000004",
+        "ho_ten": "Phạm Thu Hà",
+        "ngay_sinh": "05/05/2005",
+        "so_dien_thoai": "0933445566",
+        "lop": "DH24TMDT"
+    },
+    {
+        "ma_sv": "2044000005",
+        "ho_ten": "Vũ Hoàng Long",
+        "ngay_sinh": "22/11/2004",
+        "so_dien_thoai": "0977889900",
+        "lop": "DH24MKT"
+    },
+    {
+        "ma_sv": "2044000006",
+        "ho_ten": "Đặng Kim Ngân",
+        "ngay_sinh": "14/02/2005",
+        "so_dien_thoai": "0944556677",
+        "lop": "DH24MKT"
+    },
+    {
+        "ma_sv": "2044000007",
+        "ho_ten": "Lê Minh Anh",
+        "ngay_sinh": "09/09/2005",
+        "so_dien_thoai": "0922334455",
+        "lop": "DH24CNTT"
+    },
+    {
+        "ma_sv": "2044000008",
+        "ho_ten": "Hoàng Tiến Dũng",
+        "ngay_sinh": "19/08/2004",
+        "so_dien_thoai": "0966778899",
+        "lop": "DH24TMDT"
+    },
+    {
+        "ma_sv": "2044000009",
+        "ho_ten": "Bùi Xuân Hải",
+        "ngay_sinh": "12/12/2005",
+        "so_dien_thoai": "0911223344",
+        "lop": "DH24TMDT"
+    },
+    {
+        "ma_sv": "2044000010",
+        "ho_ten": "Ngô Thanh Trà",
+        "ngay_sinh": "08/03/2005",
+        "so_dien_thoai": "0988776655",
+        "lop": "DH24TMDT"
+    }
+]

@@ -1,0 +1,32 @@
+[
+    {
+        "username": "thanhtruc",
+        "mat_khau": "truc123",
+        "vai_tro": "admin",
+        "ma_sv": null
+    },
+    {
+        "username": "vananh",
+        "mat_khau": "anh123",
+        "vai_tro": "admin",
+        "ma_sv": null
+    },
+    {
+        "username": "an01",
+        "mat_khau": "an123",
+        "vai_tro": "user",
+        "ma_sv": "2044000001"
+    },
+    {
+        "username": "linh02",
+        "mat_khau": "linh123",
+        "vai_tro": "user",
+        "ma_sv": "2044000002"
+    },
+    {
+        "username": "bao03",
+        "mat_khau": "bao123",
+        "vai_tro": "user",
+        "ma_sv": "2044000003"
+    }
+]

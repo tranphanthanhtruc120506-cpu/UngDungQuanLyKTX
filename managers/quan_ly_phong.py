@@ -1,86 +1,75 @@
-"""managers/quan_ly_phong.py - QuanLyPhong (việc A7).
+import json
+import os
+import config
+from exceptions import InvalidDataError, DuplicateIdError
+from models.phong import Phong, PhongMayLanh
 
-Kế thừa QuanLyCoSo (thêm, xóa, sửa, tìm, lấy tất cả, __len__, lưu file...) và bổ sung:
-tìm theo trạng thái, xếp / trả chỗ trong phòng (kiểm tra chỗ), đổi loại phòng, thống kê.
+class QuanLyPhong:
+    def __init__(self):
+        self.file_path = config.FILE_PHONG
+        self.danh_sach_phong = []
+        self.doc_file()
 
-Lưu ý phân tầng (HOPDONG_LOI mục 6): them_sv_vao_phong chỉ kiểm tra CHỖ.
-Việc "SV có tồn tại không, có hợp đồng không" thuộc DichVuKtx.xep_phong.
-"""
-import copy
+    def doc_file(self):
+        if not os.path.exists(self.file_path):
+            return
+            
+        try:
+            with open(self.file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for item in data:
+                    # Phân loại để khởi tạo đúng đối tượng (Phòng thường hay Máy lạnh)
+                    if item.get("loai") == config.LOAI_MAY_LANH:
+                        p = PhongMayLanh(item['ma_phong'], item['so_cho'], item['gia_co_ban'])
+                    else:
+                        p = Phong(item['ma_phong'], item['so_cho'], item['gia_co_ban'])
+                    
+                    # Nạp danh sách sinh viên đang ở vào phòng
+                    for ma_sv in item.get('danh_sach_sv', []):
+                        p.them_sv(ma_sv)
+                        
+                    self.danh_sach_phong.append(p)
+        except Exception as e:
+            print(f"Lỗi đọc file phòng: {e}")
 
-from exceptions import InvalidDataError
-from managers.co_so import QuanLyCoSo
-from models.phong import Phong, tao_phong
+    def ghi_file(self):
+        try:
+            os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
+            with open(self.file_path, 'w', encoding='utf-8') as f:
+                # Gọi to_dict() của từng phòng (tự động phân biệt phòng thường/máy lạnh)
+                data = [p.to_dict() for p in self.danh_sach_phong]
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"Lỗi ghi file phòng: {e}")
 
-TRANG_THAI_PHONG = ("trong", "con_cho", "day")
+    def them_phong(self, phong):
+        for p in self.danh_sach_phong:
+            if p.ma_phong == phong.ma_phong:
+                raise DuplicateIdError("Mã phòng đã tồn tại!")
+        self.danh_sach_phong.append(phong)
+        self.ghi_file()
 
-
-class QuanLyPhong(QuanLyCoSo):
-    LOP_DOI_TUONG = Phong
-    TEN_DOI_TUONG = "phòng"
-    TRUONG_MA = "ma_phong"
-
-    def _truoc_khi_xoa(self, phong):
-        if len(phong) > 0:
-            raise InvalidDataError(
-                f"Phòng {phong.ma_phong} còn {len(phong)} người, không thể xóa", "ma_phong")
-
-    # ---------- tìm ----------
-    def tim_theo_trang_thai(self, trang_thai):
-        """'trong' (0 người) | 'con_cho' (có người, còn chỗ) | 'day'."""
-        if trang_thai not in TRANG_THAI_PHONG:
-            raise InvalidDataError(
-                f"Trạng thái phòng chỉ có thể là: {', '.join(TRANG_THAI_PHONG)}", "trang_thai")
-        if trang_thai == "trong":
-            return [p for p in self._ds.values() if len(p) == 0]
-        if trang_thai == "day":
-            return [p for p in self._ds.values() if p.da_day()]
-        return [p for p in self._ds.values() if len(p) > 0 and not p.da_day()]
-
-    def phong_con_cho(self):
-        """Trống + còn chỗ, sắp theo mã."""
-        return sorted((p for p in self._ds.values() if not p.da_day()),
-                      key=lambda p: p.ma_phong)
-
-    def tim_phong_cua_sv(self, ma_sv):
-        """Ngoại lệ có chủ đích: trả None nếu SV chưa ở phòng nào (không ném NotFoundError)."""
-        for p in self._ds.values():
-            if p.co_sv(ma_sv):
+    def tim_phong(self, ma_phong):
+        for p in self.danh_sach_phong:
+            if p.ma_phong == ma_phong:
                 return p
         return None
-
-    # ---------- xếp / trả chỗ (làm trên bản sao, ghi lỗi thì hoàn tác) ----------
+        
     def them_sv_vao_phong(self, ma_phong, ma_sv):
-        """NotFound(phòng) · InvalidData(mã SV) · Duplicate · RoomFull · Storage."""
-        goc = self.tim_theo_ma(ma_phong)
-        ban_sao = copy.deepcopy(goc)
-        ban_sao.them_sv(ma_sv)
-        return self._thay_the(ban_sao)
-
-    def bo_sv_khoi_phong(self, ma_phong, ma_sv):
-        """NotFound (phòng, hoặc SV không ở phòng đó) · Storage."""
-        goc = self.tim_theo_ma(ma_phong)
-        ban_sao = copy.deepcopy(goc)
-        ban_sao.bo_sv(ma_sv)
-        return self._thay_the(ban_sao)
-
-    # ---------- đổi loại / thống kê ----------
-    def doi_loai(self, ma_phong, loai_moi):
-        """Dựng lớp con mới (thuong <-> maylanh), giữ nguyên mã, số chỗ, giá và danh sách SV."""
-        goc = self.tim_theo_ma(ma_phong)
-        du_lieu = goc.to_dict()
-        du_lieu["loai"] = loai_moi
-        return self._thay_the(tao_phong(du_lieu))   # loại lạ -> InvalidDataError
+        phong = self.tim_phong(ma_phong)
+        if phong:
+            phong.them_sv(ma_sv)
+            self.ghi_file() # Ghi lại vào file json ngay sau khi thêm
+        else:
+            raise InvalidDataError("Không tìm thấy phòng!")
 
     def thong_ke_phong(self):
-        ds = list(self._ds.values())
-        tong_cho = sum(p.so_cho for p in ds)
-        dang_o = sum(len(p) for p in ds)
+        # Tính toán thống kê cơ bản dùng cho biểu đồ sau này
+        tong_phong = len(self.danh_sach_phong)
+        so_phong_day = sum(1 for p in self.danh_sach_phong if len(p.danh_sach_sv) >= p.so_cho)
+        so_phong_trong = tong_phong - so_phong_day
         return {
-            "tong_phong": len(ds),
-            "tong_cho": tong_cho,
-            "dang_o": dang_o,
-            "cho_trong": tong_cho - dang_o,
-            "so_phong_trong": sum(1 for p in ds if len(p) == 0),
-            "so_phong_day": sum(1 for p in ds if p.da_day()),
+            "tong_phong": tong_phong,
+            "so_phong_day": so_phong_day,
+            "so_phong_trong": so_phong_trong
         }
