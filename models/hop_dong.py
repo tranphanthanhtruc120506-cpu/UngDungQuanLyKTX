@@ -1,11 +1,22 @@
 from exceptions import InvalidDataError
 import config
+from datetime import datetime
 
 class HopDong:
     def __init__(self, ma_hd, ma_sv, ma_phong, ngay_bat_dau, ngay_ket_thuc, trang_thai=config.TT_HIEU_LUC):
         self.__ma_hd = ma_hd
         self.__ma_sv = ma_sv
         self.__ma_phong = ma_phong
+        
+        # Ràng buộc: Kiểm tra định dạng và logic ngày tháng hợp đồng
+        try:
+            d_bd = datetime.strptime(ngay_bat_dau, "%d/%m/%Y")
+            d_kt = datetime.strptime(ngay_ket_thuc, "%d/%m/%Y")
+            if d_kt <= d_bd:
+                raise InvalidDataError("Ngày kết thúc hợp đồng phải diễn ra sau ngày bắt đầu!")
+        except ValueError:
+            raise InvalidDataError("Định dạng ngày tháng không hợp lệ (DD/MM/YYYY)!")
+
         self.__ngay_bat_dau = ngay_bat_dau
         self.__ngay_ket_thuc = ngay_ket_thuc
         self.__trang_thai = trang_thai
@@ -38,6 +49,13 @@ class HopDong:
 
     @ngay_ket_thuc.setter
     def ngay_ket_thuc(self, value):
+        try:
+            d_kt = datetime.strptime(value, "%d/%m/%Y")
+            d_bd = datetime.strptime(self.__ngay_bat_dau, "%d/%m/%Y")
+            if d_kt <= d_bd:
+                raise InvalidDataError("Ngày kết thúc hợp đồng phải diễn ra sau ngày bắt đầu!")
+        except ValueError:
+            raise InvalidDataError("Định dạng ngày tháng không hợp lệ (DD/MM/YYYY)!")
         self.__ngay_ket_thuc = value
 
     @property

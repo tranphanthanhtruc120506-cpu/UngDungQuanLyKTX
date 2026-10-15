@@ -7,8 +7,17 @@ from exceptions import InvalidDataError
 class Phong:
     def __init__(self, ma_phong, so_cho, gia_co_ban):
         self.__ma_phong = ma_phong      
+        
+        # Ràng buộc: Số chỗ phải là số nguyên dương > 0
+        if not isinstance(so_cho, int) or so_cho <= 0:
+            raise InvalidDataError("Số chỗ của phòng phải là số nguyên lớn hơn 0!")
         self.__so_cho = so_cho
+        
+        # Ràng buộc: Giá cơ bản phải lớn hơn hoặc bằng 0
+        if gia_co_ban < 0:
+            raise InvalidDataError("Giá cơ bản không được là số âm!")
         self.__gia_co_ban = gia_co_ban
+        
         self.__danh_sach_sv = []        # Lưu mã các sinh viên đang ở trong phòng
 
     @property
